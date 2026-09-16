@@ -5,13 +5,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,7 +20,11 @@ import com.example.policylabel.data.SampleData
 import com.example.policylabel.ui.theme.PolicyLabelTheme
 
 @Composable
-fun PolicyLabel(policyData: PolicyData, modifier: Modifier = Modifier) {
+fun PolicyLabel(
+    policyData: PolicyData,
+    modifier: Modifier = Modifier,
+    onSignRequest: () -> Unit = {}
+) {
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -73,6 +77,46 @@ fun PolicyLabel(policyData: PolicyData, modifier: Modifier = Modifier) {
             text = "* Values are based on developer disclosures.",
             fontSize = 10.sp,
             lineHeight = 12.sp
+        )
+
+        HorizontalDivider(thickness = 8.dp, color = Color.Black)
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (policyData.signature != null) {
+            SignatureBox(policyData.signerAddress ?: "Unknown", policyData.signature)
+        } else {
+            Button(
+                onClick = onSignRequest,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                shape = MaterialTheme.shapes.extraSmall
+            ) {
+                Text("SIGN WITH SEEKER", fontWeight = FontWeight.Black)
+            }
+        }
+    }
+}
+
+@Composable
+fun SignatureBox(address: String, signature: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, Color.Black)
+            .padding(8.dp)
+    ) {
+        Text("VERIFIED CONSENT", fontWeight = FontWeight.Black, fontSize = 14.sp)
+        Text(
+            "Signer: $address",
+            fontSize = 10.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            "Proof: $signature",
+            fontSize = 8.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

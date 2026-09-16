@@ -6,7 +6,9 @@ data class PolicyData(
     val dataCollected: List<DataPoint>,
     val dataShared: List<DataPoint>,
     val retentionPeriod: String,
-    val securityPractices: List<String>
+    val securityPractices: List<String>,
+    val signature: String? = null,
+    val signerAddress: String? = null
 )
 
 data class DataPoint(
