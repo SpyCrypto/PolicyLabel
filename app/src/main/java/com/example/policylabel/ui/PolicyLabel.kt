@@ -7,11 +7,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,18 +27,25 @@ import com.example.policylabel.ui.theme.PolicyLabelTheme
 fun PolicyLabel(
     policyData: PolicyData,
     modifier: Modifier = Modifier,
-    onSignRequest: () -> Unit = {}
+    onSignRequest: () -> Unit = {},
+    onProceed: () -> Unit = {}
 ) {
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .border(2.dp, Color.Black)
-            .background(Color.White)
-            .padding(8.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
+    CompositionLocalProvider(LocalContentColor provides Color.Black) {
+        Column(
+            modifier = modifier
+                .padding(16.dp)
+                .border(2.dp, Color.Black)
+                .background(Color.White)
+                .padding(8.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
         Text(
-            text = "Digital Policy Facts",
+            text = buildAnnotatedString {
+                append("Digital ")
+                withStyle(style = SpanStyle(color = Color(0xFF0000FE))) {
+                    append("Policy Facts")
+                }
+            },
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Black,
             fontSize = 32.sp
@@ -84,17 +95,27 @@ fun PolicyLabel(
 
         if (policyData.signature != null) {
             SignatureBox(policyData.signerAddress ?: "Unknown", policyData.signature)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = onProceed,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White),
+                shape = MaterialTheme.shapes.extraSmall
+            ) {
+                Text("PROCEED TO APP", fontWeight = FontWeight.Black)
+            }
         } else {
             Button(
                 onClick = onSignRequest,
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.White),
                 shape = MaterialTheme.shapes.extraSmall
             ) {
                 Text("SIGN WITH SEEKER", fontWeight = FontWeight.Black)
             }
         }
     }
+}
 }
 
 @Composable

@@ -2,8 +2,8 @@ package com.example.policylabel.data
 
 object SampleData {
     val mockPolicy = PolicyData(
-        appName = "SocialConnect",
-        developer = "Connect Labs Inc.",
+        appName = "PolicyLabel",
+        developer = "PolicyLabel Team",
         dataCollected = listOf(
             DataPoint("Identity", "Name, Email, Phone", "Account creation"),
             DataPoint("Location", "Precise Location", "Personalized ads"),
